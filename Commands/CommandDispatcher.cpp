@@ -172,7 +172,7 @@ Command *CommandDispatcher::analyzeCommand(std::string rawCommand) {
                     return new ErrorCommand();
                 }
 
-                return new CollageCommand(args[2], args[3], args[4]);
+                return new CollageCommand(args[1],args[2], args[3], args[4]);
 
             } else {
                 std::cout << "Output file is not a PPM/PGM/PBM image." << std::endl;

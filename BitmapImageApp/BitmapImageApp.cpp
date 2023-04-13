@@ -22,8 +22,10 @@ void BitmapImageApp::start() {
         } else {
             manager.execute(command);
         }
+
     } while (dynamic_cast<ExitCommand *>(command) == nullptr);
 
+    delete command;
     std::cout << "END" << std::endl;
 }
 
