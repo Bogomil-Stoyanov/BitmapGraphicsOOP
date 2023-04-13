@@ -1,0 +1,10 @@
+#ifndef BITMAPGRAPHICS_SESSION_H
+#define BITMAPGRAPHICS_SESSION_H
+
+
+class Session {
+
+};
+
+
+#endif //BITMAPGRAPHICS_SESSION_H
