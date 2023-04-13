@@ -67,3 +67,6 @@ void ImagePGM::copy(Image* image) {
 
     Image::copy(image);
 }
+
+void ImagePGM::toCollage(Image *image2, const std::string &direction, const std::string &outPath) {
+}

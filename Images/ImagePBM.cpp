@@ -1,6 +1,7 @@
 
 #include "ImagePBM.h"
 
+#include <algorithm>
 #include <utility>
 #include "Data/MatrixOperations.h"
 
@@ -18,26 +19,55 @@ ImagePBM *ImagePBM::copy() {
 }
 
 void ImagePBM::readFromFile(std::ifstream &file) {
-    std::cout<<"HERE";
     readMagicNumberFromFile(file);
     privateRead(file);
     pixels.readFromFile(file);
-    std::cout<<"end";
 }
 
 void ImagePBM::writeToFile(std::ofstream &file) {
     writeMagicNumberToFile(file);
     privateWrite(file);
     pixels.writeToFile(file);
-
-    std::cout<<"SAVING"<<std::endl;
-
     clearPreviousVersions();
 }
 
-void ImagePBM::rotate(std::string direction) {
-    //m_previousVersion = clone(); // TODO: Do something about the previousVersions
+void ImagePBM::toCollage(Image *image2, const std::string &direction, const std::string &outPath) {
+    std::cout<<"HERE"<<std::endl;
+    std::string type = fileName.substr(fileName.size() - 4);
+    auto image2pbm = dynamic_cast<ImagePBM *>(image2);
 
+    int rows, cols;
+
+    if (direction == "horizontal") {
+        std::cout<<"herer2"<<std::endl;
+        rows = std::max(pixels.getRows(), image2pbm->pixels.getRows());
+        cols = pixels.getCols() + image2pbm->pixels.getCols();
+
+        PixelMatrix<std::uint16_t> matrix;
+        matrix.resize(rows, cols);
+
+
+        ImagePBM output(outPath);
+        output.magicNumber = magicNumber;
+        output.pixels = matrix;
+
+        std::cout<<"COLS:"<<output.pixels.getCols()<<std::endl;
+
+
+        std::ofstream file(outPath);
+       output.writeToFile(file);
+
+    } else {
+        std::cout<<"herer3"<<std::endl;
+        //vertical
+        rows = pixels.getRows() + image2pbm->pixels.getRows();
+        cols = std::max(pixels.getCols(), image2pbm->pixels.getCols());
+    }
+
+
+}
+
+void ImagePBM::rotate(std::string direction) {
     PixelMatrixOperations<std::uint16_t>::rotatePixels(direction, pixels);
 }
 

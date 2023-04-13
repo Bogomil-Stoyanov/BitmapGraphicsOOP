@@ -52,7 +52,7 @@ private:
 
 template<typename T>
 inline PixelMatrix<T>::PixelMatrix(const int rows, const int cols)
-        : data(nullptr), countRows(0), countColumns(0) {
+        : data(nullptr), countRows(rows), countColumns(cols) {
     fillPixelMatrixWithZeroes(rows, cols);
 }
 

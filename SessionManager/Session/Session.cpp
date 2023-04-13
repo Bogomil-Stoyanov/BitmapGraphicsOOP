@@ -104,7 +104,7 @@ void Session::info() const {
     }
     std::cout << std::endl;
 
-    if(!unsavedChanges.empty()) {
+    if (!unsavedChanges.empty()) {
         std::cout << "Pending transformations: ";
         for (const auto &change: unsavedChanges) {
             std::cout << change << " ";
@@ -124,4 +124,27 @@ bool Session::hasFile(const std::string &filepath) const {
 
 bool Session::checkUnsavedChanges() const {
     return unsavedChanges.empty();
+}
+
+void Session::collage(std::string path1, std::string path2, std::string outputPath, std::string direction) {
+    if (!hasFile(path1)) {
+        std::cout << "File " << path1 << " is not added to this session";
+        return;
+    } else if (!hasFile(path2)) {
+        std::cout << "File " << path2 << " is not added to this session";
+        return;
+    }
+
+    for (auto image: images) {
+        if (image->getFileName() == path1) {
+            for (auto image2: images) {
+                if (image2->getFileName() == path2) {
+                    image->toCollage(image2, direction, outputPath);
+                    break;
+                }
+            }
+            break;
+        }
+    }
+
 }

@@ -148,7 +148,6 @@ Command *CommandDispatcher::analyzeCommand(std::string rawCommand) {
 
     }
     else if (args[0] == "collage") {
-        std::cout << "Collage command\n";
 
         if(args[1]!="horizontal" && args[1] != "vertical"){
             std::cout<<"Provide a valid orientation: horizontal / vertical"<<std::endl;
@@ -172,6 +171,7 @@ Command *CommandDispatcher::analyzeCommand(std::string rawCommand) {
                     return new ErrorCommand();
                 }
 
+                std::cout<<"here2"<<std::endl;
                 return new CollageCommand(args[1],args[2], args[3], args[4]);
 
             } else {

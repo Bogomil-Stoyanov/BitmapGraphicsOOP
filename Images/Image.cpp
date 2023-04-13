@@ -13,18 +13,14 @@ void Image::removeUnsavedChanges() {
     clearPreviousVersions();
 }
 
-Image *Image::toCollage(Image *image1, Image *image2, const std::string& direction, const std::string& outImageLocation) {
-    return nullptr;
-}
-
 Image::Image(const Image &other)
-        : m_fileName(other.m_fileName), magicNumber(other.magicNumber),
+        : fileName(other.fileName), magicNumber(other.magicNumber),
           maxColorValue(other.maxColorValue), grayscale(other.grayscale),
           monochrome(isMonochrome()), previousVersion(other.previousVersion) {
 }
 
 std::string Image::getFileName() const {
-    return m_fileName;
+    return fileName;
 }
 
 bool Image::isGrayscale() const {
@@ -61,7 +57,7 @@ void Image::clearPreviousVersions() {
 }
 
 void Image::copy(Image *image) {
-    m_fileName = image->m_fileName;
+    fileName = image->fileName;
     magicNumber = image->magicNumber;
     maxColorValue = image->maxColorValue;
     grayscale = image->grayscale;
@@ -71,6 +67,6 @@ void Image::copy(Image *image) {
     delete image;
 }
 
-Image::Image(std::string filePath, const bool grayscale, const bool monochrome, const std::uint16_t maxColorValue) : m_fileName(std::move(
-        filePath)), grayscale(grayscale),monochrome(monochrome),maxColorValue(maxColorValue),previousVersion(nullptr) {
+Image::Image(std::string filePath, const bool grayscale, const bool monochrome, const std::uint16_t maxColorValue) : fileName(std::move(
+        filePath)), grayscale(grayscale), monochrome(monochrome), maxColorValue(maxColorValue), previousVersion(nullptr) {
 }

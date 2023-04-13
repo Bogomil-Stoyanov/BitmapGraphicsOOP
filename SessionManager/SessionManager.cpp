@@ -23,6 +23,7 @@
 #include "../Images/ImageCreator.h"
 #include <iostream>
 #include <fstream>
+#include <utility>
 
 Session &SessionManager::getActiveSession() {
     return sessions[currentActiveSessionId - 1];
@@ -116,7 +117,7 @@ void SessionManager::load(std::vector<std::string> paths) {
     }
 }
 
-void SessionManager::add(const std::string& filePath) {
+void SessionManager::add(const std::string &filePath) {
     if (isFileInUse(filePath)) {
         std::cout << "File: " << filePath << " is already in use" << std::endl;
         return;
@@ -138,22 +139,21 @@ void SessionManager::add(const std::string& filePath) {
 }
 
 void SessionManager::close() {
-    if(Session::countOfSessions==0){
-        std::cout<<"No active sessions"<<std::endl;
+    if (Session::countOfSessions == 0) {
+        std::cout << "No active sessions" << std::endl;
         return;
     }
-    sessions.erase(sessions.begin() + (currentActiveSessionId-1));
-    if(sessions.empty()){
+    sessions.erase(sessions.begin() + (currentActiveSessionId - 1));
+    if (sessions.empty()) {
         currentActiveSessionId = 0;
         Session::countOfSessions = 0;
-    }else {
+    } else {
         currentActiveSessionId = 1;
     }
-
 }
 
 void SessionManager::collage(std::string direction, std::string path1, std::string path2, std::string outPath) {
-    //TODO
+    getActiveSession().collage(std::move(path1), std::move(path2), std::move(outPath), std::move(direction));
 }
 
 void SessionManager::grayscale() {
@@ -181,8 +181,8 @@ void SessionManager::save() {
 }
 
 void SessionManager::sessionInfo() {
-    if(sessions.empty()){
-        std::cout<<"No sessions"<<std::endl;
+    if (sessions.empty()) {
+        std::cout << "No sessions" << std::endl;
         return;
     }
     getActiveSession().info();

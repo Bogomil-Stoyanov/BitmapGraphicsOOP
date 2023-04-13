@@ -21,6 +21,7 @@ public:
     void monochrome();
     void rotate(const std::string& direction);
     void negative();
+    void collage(std::string path1, std::string path2, std::string outputPath, std::string direction);
     void save();
     void saveAs(const std::string& filePath);
     void undo();

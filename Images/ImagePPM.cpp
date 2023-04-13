@@ -32,6 +32,10 @@ void ImagePPM::writeToFile(std::ofstream& file) {
     clearPreviousVersions();
 }
 
+void ImagePPM::toCollage(Image *image2, const std::string &direction, const std::string &outPath) {
+
+}
+
 void ImagePPM::rotate(std::string direction) {
     PixelMatrixOperations<RGBPixelData>::rotatePixels(direction, m_pixels);
 }

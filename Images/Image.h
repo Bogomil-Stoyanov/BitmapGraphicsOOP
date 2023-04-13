@@ -21,12 +21,11 @@ public:
     virtual void toGrayscale() = 0;
     virtual void toMonochrome() = 0;
     virtual void toNegative() = 0;
+    virtual void toCollage(Image* image2, const std::string& direction, const std::string& outPath) = 0;
 
     virtual void undo();
 
     void removeUnsavedChanges();
-
-    static Image* toCollage(Image* image1, Image* image2, const std::string& direction, const std::string& outPath);
 
     virtual ~Image() = default;
 
@@ -34,7 +33,7 @@ protected:
     Image(std::string filePath, const bool grayscale = false, const bool monochrome = false, const std::uint16_t maxColorValue = 0);
     Image(const Image& other);
 
-    std::string m_fileName;
+    std::string fileName;
     int magicNumber;
     std::uint16_t maxColorValue;
     bool grayscale;
