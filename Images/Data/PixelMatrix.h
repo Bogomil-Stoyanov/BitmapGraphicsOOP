@@ -140,6 +140,7 @@ inline void PixelMatrix<T>::deleteData() {
     }
 
     delete[] data;
+
     data = nullptr;
 }
 
