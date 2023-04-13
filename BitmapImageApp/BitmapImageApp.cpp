@@ -18,8 +18,9 @@ void BitmapImageApp::start() {
         command = CommandDispatcher::analyzeCommand(input);
 
         if (dynamic_cast<ErrorCommand *>(command) != nullptr) {
-            std::cout << "ERROR" << std::endl;
-        } else if (dynamic_cast<ExitCommand *>(command) != nullptr) {
+
+        } else {
+            manager.execute(command);
         }
     } while (dynamic_cast<ExitCommand *>(command) == nullptr);
 

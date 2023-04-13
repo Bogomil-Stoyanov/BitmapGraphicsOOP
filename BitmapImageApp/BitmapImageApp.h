@@ -2,6 +2,7 @@
 #define BITMAPGRAPHICS_BITMAPIMAGEAPP_H
 
 #include "../Commands/CommandDispatcher.h"
+#include "../SessionManager/SessionManager.h"
 
 
 
@@ -15,7 +16,7 @@ private:
     BitmapImageApp();
     BitmapImageApp(const BitmapImageApp &other) = delete;
     BitmapImageApp &operator=(const BitmapImageApp &other) = delete;
-
+    SessionManager manager;
 };
 
 
