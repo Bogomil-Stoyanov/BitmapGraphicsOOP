@@ -2,7 +2,6 @@
 
 #include <cmath>
 #include "ImagePGM.h"
-#include "Data/MatrixOperations.h"
 
 ImagePGM::ImagePGM(std::string fileName)
         : Image(fileName, true, false, 1) {
@@ -25,15 +24,14 @@ void ImagePGM::readFromFile(std::ifstream& file) {
 
 void ImagePGM::writeToFile(std::ofstream& file) {
     writeMagicNumberToFile(file);
-    privateWrite(file);
+    file << pixels.getCols() << ' ' << pixels.getRows() << '\n';
     writeMaxColorValue(file);
     pixels.writeToFile(file);
-
     clearPreviousVersions();
 }
 
 void ImagePGM::rotate(std::string direction) {
-    PixelMatrixOperations<std::uint16_t>::rotatePixels(direction, pixels);
+    pixels.rotatePixels(direction);
 }
 
 void ImagePGM::toGrayscale() {
@@ -47,15 +45,15 @@ void ImagePGM::toMonochrome() {
 }
 
 void ImagePGM::toNegative() {
-    PixelMatrixOperations<std::uint16_t>::negativeTransformation(pixels, maxColorValue);
+    pixels.negativeTransformation(maxColorValue);
 }
 
 void ImagePGM::privateRead(std::ifstream& file) {
-    PixelMatrixOperations<std::uint16_t>::readAndResize(file, pixels);
+    pixels.readAndResize(file);
 }
 
 void ImagePGM::privateWrite(std::ofstream& file) const {
-    PixelMatrixOperations<std::uint16_t>::writeToFile(file, pixels);
+    pixels.writeToFile(file);
 }
 
 void ImagePGM::copy(Image* image) {

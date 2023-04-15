@@ -2,7 +2,6 @@
 
 #include "ImagePPM.h"
 #include "Data/RGBPixelData.h"
-#include "Data/MatrixOperations.h"
 
 ImagePPM::ImagePPM(std::string fileName)
         : Image(fileName, false, false, 1) {
@@ -25,9 +24,9 @@ void ImagePPM::readFromFile(std::ifstream& file) {
 
 void ImagePPM::writeToFile(std::ofstream& file) {
     writeMagicNumberToFile(file);
-    privateWrite(file);
+    file << pixels.getCols() << ' ' << pixels.getRows() << '\n';
     writeMaxColorValue(file);
-    pixels.writeToFile(file);
+    privateWrite(file);
 
     clearPreviousVersions();
 }
@@ -85,7 +84,7 @@ void ImagePPM::toCollage(Image *image2, const std::string &direction, const std:
 }
 
 void ImagePPM::rotate(std::string direction) {
-    PixelMatrixOperations<RGBPixelData>::rotatePixels(direction, pixels);
+    pixels.rotatePixels(direction);
 }
 
 void ImagePPM::toGrayscale() {
@@ -101,15 +100,15 @@ void ImagePPM::toMonochrome() {
 }
 
 void ImagePPM::toNegative() {
-    PixelMatrixOperations<RGBPixelData>::negativeTransformation(pixels, maxColorValue);
+    pixels.negativeTransformation(maxColorValue);
 }
 
 void ImagePPM::privateRead(std::ifstream& file) {
-    PixelMatrixOperations<RGBPixelData>::readAndResize(file, pixels);
+    pixels.readAndResize(file);
 }
 
 void ImagePPM::privateWrite(std::ofstream& file) const {
-    PixelMatrixOperations<RGBPixelData>::writeToFile(file, pixels);
+    pixels.writeToFile(file);
 }
 
 void ImagePPM::copy(Image* image) {

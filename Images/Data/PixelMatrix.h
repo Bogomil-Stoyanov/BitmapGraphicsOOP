@@ -23,8 +23,6 @@ public:
 
     void writeToFile(std::ofstream &file) const;
 
-    void rotate(bool isRight);
-
     T &getElementAt(int row, int col);
 
     void setElementAt(int row, int col, T elem);
@@ -37,6 +35,12 @@ public:
 
     void resize(int rows, int cols);
 
+     void readAndResize(std::ifstream &file);
+
+     void rotatePixels(const std::string &direction);
+
+     void negativeTransformation(const std::uint16_t value);
+
 
 private:
     T **data;
@@ -47,6 +51,7 @@ private:
 
     void copy(const PixelMatrix<T> &other);
 
+    void rotate(bool isRight);
 
     void fillPixelMatrix(int rows, int cols, std::function<void(T &, int, int)> pixelLogicFiller);
 
@@ -193,6 +198,32 @@ inline void PixelMatrix<T>::resize(const int rows, const int cols) {
         else { elem = 0; }
     });
 }
+template<typename T>
+inline void PixelMatrix<T>::readAndResize(std::ifstream &file) {
+    int rows;
+    int cols;
+    file >> cols >> rows;
+    resize(rows, cols);
+}
+
+template<typename T>
+inline void PixelMatrix<T>::rotatePixels(const std::string &direction) {
+    if (direction == "left")
+        rotate(false);
+    else if (direction == "right")
+        rotate(true);
+}
+
+template<typename T>
+inline void PixelMatrix<T>::negativeTransformation(const std::uint16_t value) {
+    for (int row = 0; row < countRows; ++row) {
+        for (int col = 0; col < countColumns; ++col) {
+            getElementAt(row, col) = value - getElementAt(row, col);
+        }
+
+    }
+}
+
 
 
 #endif //BITMAPGRAPHICS_PIXELPixelMatrix_H

@@ -3,7 +3,6 @@
 
 #include <algorithm>
 #include <utility>
-#include "Data/MatrixOperations.h"
 
 
 ImagePBM::ImagePBM(std::string fileName)
@@ -27,7 +26,6 @@ void ImagePBM::readFromFile(std::ifstream &file) {
 void ImagePBM::writeToFile(std::ofstream &file) {
     writeMagicNumberToFile(file);
     privateWrite(file);
-    pixels.writeToFile(file);
     clearPreviousVersions();
 }
 
@@ -84,7 +82,7 @@ void ImagePBM::toCollage(Image *image2, const std::string &direction, const std:
 }
 
 void ImagePBM::rotate(std::string direction) {
-    PixelMatrixOperations<std::uint16_t>::rotatePixels(direction, pixels);
+    pixels.rotatePixels(direction);
 }
 
 void ImagePBM::toGrayscale() {
@@ -96,15 +94,15 @@ void ImagePBM::toMonochrome() {
 }
 
 void ImagePBM::toNegative() {
-    PixelMatrixOperations<std::uint16_t>::negativeTransformation(pixels, 1);
+    pixels.negativeTransformation( 1);
 }
 
 void ImagePBM::privateRead(std::ifstream &file) {
-    PixelMatrixOperations<std::uint16_t>::readAndResize(file, pixels);
+    pixels.readAndResize(file);
 }
 
 void ImagePBM::privateWrite(std::ofstream &file) const {
-    PixelMatrixOperations<std::uint16_t>::writeToFile(file, pixels);
+    pixels.writeToFile(file);
 }
 
 void ImagePBM::copy(Image *image) {
