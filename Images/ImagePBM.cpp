@@ -32,39 +32,55 @@ void ImagePBM::writeToFile(std::ofstream &file) {
 }
 
 void ImagePBM::toCollage(Image *image2, const std::string &direction, const std::string &outPath) {
-    std::cout<<"HERE"<<std::endl;
     std::string type = fileName.substr(fileName.size() - 4);
     auto image2pbm = dynamic_cast<ImagePBM *>(image2);
 
     int rows, cols;
+    PixelMatrix<std::uint16_t> matrix;
 
     if (direction == "horizontal") {
-        std::cout<<"herer2"<<std::endl;
         rows = std::max(pixels.getRows(), image2pbm->pixels.getRows());
         cols = pixels.getCols() + image2pbm->pixels.getCols();
 
-        PixelMatrix<std::uint16_t> matrix;
-        matrix.resize(rows, cols);
+        matrix.fillPixelMatrixWithZeroes(rows, cols);
 
-
-        ImagePBM output(outPath);
-        output.magicNumber = magicNumber;
-        output.pixels = matrix;
-
-        std::cout<<"COLS:"<<output.pixels.getCols()<<std::endl;
-
-
-        std::ofstream file(outPath);
-       output.writeToFile(file);
+        for (int i = 0; i < pixels.getRows(); i++) {
+            for (int j = 0; j < pixels.getCols(); j++) {
+                matrix.setElementAt(i, j, pixels.getElement(i, j));
+            }
+        }
+        for (int i = 0; i < image2pbm->pixels.getRows(); i++) {
+            for (int j = 0; j < image2pbm->pixels.getCols(); j++) {
+                matrix.setElementAt(i, j + pixels.getCols(), image2pbm->pixels.getElement(i, j));
+            }
+        }
 
     } else {
-        std::cout<<"herer3"<<std::endl;
         //vertical
         rows = pixels.getRows() + image2pbm->pixels.getRows();
         cols = std::max(pixels.getCols(), image2pbm->pixels.getCols());
+
+        matrix.fillPixelMatrixWithZeroes(rows, cols);
+
+        for (int i = 0; i < pixels.getRows(); i++) {
+            for (int j = 0; j < pixels.getCols(); j++) {
+                matrix.setElementAt(i, j, pixels.getElement(i, j));
+            }
+        }
+
+        for (int i = 0; i < image2pbm->pixels.getRows(); i++) {
+            for (int j = 0; j < cols; j++) {
+                matrix.setElementAt(i + pixels.getRows(), j, image2pbm->pixels.getElement(i, j));
+            }
+        }
     }
 
+    ImagePBM output(outPath);
+    output.magicNumber = magicNumber;
+    output.pixels = matrix;
 
+    std::ofstream file(outPath);
+    output.writeToFile(file);
 }
 
 void ImagePBM::rotate(std::string direction) {

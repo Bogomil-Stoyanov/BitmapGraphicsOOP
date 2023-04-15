@@ -9,7 +9,7 @@ ImagePPM::ImagePPM(std::string fileName)
 }
 
 ImagePPM::ImagePPM(const ImagePPM& other)
-        : Image(other), m_pixels(other.m_pixels) {
+        : Image(other), pixels(other.pixels) {
 }
 
 ImagePPM* ImagePPM::copy() {
@@ -20,48 +20,96 @@ void ImagePPM::readFromFile(std::ifstream& file) {
     readMagicNumberFromFile(file);
     privateRead(file);
     readMaxColorValueFromFile(file);
-    m_pixels.readFromFile(file);
+    pixels.readFromFile(file);
 }
 
 void ImagePPM::writeToFile(std::ofstream& file) {
     writeMagicNumberToFile(file);
     privateWrite(file);
     writeMaxColorValue(file);
-    m_pixels.writeToFile(file);
+    pixels.writeToFile(file);
 
     clearPreviousVersions();
 }
 
 void ImagePPM::toCollage(Image *image2, const std::string &direction, const std::string &outPath) {
+    std::string type = fileName.substr(fileName.size() - 4);
+    auto image2ppm = dynamic_cast<ImagePPM *>(image2);
 
+    int rows, cols;
+    PixelMatrix<RGBPixelData> matrix;
+
+    if (direction == "horizontal") {
+        rows = std::max(pixels.getRows(), image2ppm->pixels.getRows());
+        cols = pixels.getCols() + image2ppm->pixels.getCols();
+
+        matrix.fillPixelMatrixWithZeroes(rows, cols);
+
+        for (int i = 0; i < pixels.getRows(); i++) {
+            for (int j = 0; j < pixels.getCols(); j++) {
+                matrix.setElementAt(i, j, pixels.getElement(i, j));
+            }
+        }
+        for (int i = 0; i < image2ppm->pixels.getRows(); i++) {
+            for (int j = 0; j < image2ppm->pixels.getCols(); j++) {
+                matrix.setElementAt(i, j + pixels.getCols(), image2ppm->pixels.getElement(i, j));
+            }
+        }
+
+    } else {
+        //vertical
+        rows = pixels.getRows() + image2ppm->pixels.getRows();
+        cols = std::max(pixels.getCols(), image2ppm->pixels.getCols());
+
+        matrix.fillPixelMatrixWithZeroes(rows, cols);
+
+        for (int i = 0; i < pixels.getRows(); i++) {
+            for (int j = 0; j < pixels.getCols(); j++) {
+                matrix.setElementAt(i, j, pixels.getElement(i, j));
+            }
+        }
+
+        for (int i = 0; i < image2ppm->pixels.getRows(); i++) {
+            for (int j = 0; j < cols; j++) {
+                matrix.setElementAt(i + pixels.getRows(), j, image2ppm->pixels.getElement(i, j));
+            }
+        }
+    }
+
+    ImagePPM output(outPath);
+    output.magicNumber = magicNumber;
+    output.pixels = matrix;
+
+    std::ofstream file(outPath);
+    output.writeToFile(file);
 }
 
 void ImagePPM::rotate(std::string direction) {
-    PixelMatrixOperations<RGBPixelData>::rotatePixels(direction, m_pixels);
+    PixelMatrixOperations<RGBPixelData>::rotatePixels(direction, pixels);
 }
 
 void ImagePPM::toGrayscale() {
-    for (int row = 0; row < m_pixels.getRows(); ++row)
-        for (int col = 0; col < m_pixels.getCols(); ++col)
-            m_pixels.getElementAt(row, col).toGrayscale();
+    for (int row = 0; row < pixels.getRows(); ++row)
+        for (int col = 0; col < pixels.getCols(); ++col)
+            pixels.getElementAt(row, col).toGrayscale();
 }
 
 void ImagePPM::toMonochrome() {
-    for (int row = 0; row < m_pixels.getRows(); ++row)
-        for (int col = 0; col < m_pixels.getCols(); ++col)
-            m_pixels.getElementAt(row, col).normalize(maxColorValue);
+    for (int row = 0; row < pixels.getRows(); ++row)
+        for (int col = 0; col < pixels.getCols(); ++col)
+            pixels.getElementAt(row, col).normalize(maxColorValue);
 }
 
 void ImagePPM::toNegative() {
-    PixelMatrixOperations<RGBPixelData>::negativeTransformation(m_pixels, maxColorValue);
+    PixelMatrixOperations<RGBPixelData>::negativeTransformation(pixels, maxColorValue);
 }
 
 void ImagePPM::privateRead(std::ifstream& file) {
-    PixelMatrixOperations<RGBPixelData>::readAndResize(file, m_pixels);
+    PixelMatrixOperations<RGBPixelData>::readAndResize(file, pixels);
 }
 
 void ImagePPM::privateWrite(std::ofstream& file) const {
-    PixelMatrixOperations<RGBPixelData>::writeToFile(file, m_pixels);
+    PixelMatrixOperations<RGBPixelData>::writeToFile(file, pixels);
 }
 
 void ImagePPM::copy(Image* image) {
@@ -69,7 +117,7 @@ void ImagePPM::copy(Image* image) {
 
     if (ppm == nullptr) return; // incorrect image type
 
-    m_pixels = ppm->m_pixels;
+    pixels = ppm->pixels;
 
     Image::copy(image);
 }

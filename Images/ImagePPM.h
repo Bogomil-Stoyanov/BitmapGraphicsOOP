@@ -27,7 +27,7 @@ public:
     void toCollage(Image* image2, const std::string& direction, const std::string& outPath) override;
 
 private:
-    PixelMatrix<RGBPixelData> m_pixels;
+    PixelMatrix<RGBPixelData> pixels;
 
     void privateRead(std::ifstream& file) override;
 

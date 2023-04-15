@@ -154,6 +154,7 @@ Command *CommandDispatcher::analyzeCommand(std::string rawCommand) {
             return new ErrorCommand();
         }
 
+
         if (args[2].compare(args[2].size() - 4, 4, ".pbm") == 0 ||
             args[2].compare(args[2].size() - 4, 4, ".ppm") == 0 ||
             args[2].compare(args[2].size() - 4, 4, ".pgm") == 0 ||
@@ -171,7 +172,6 @@ Command *CommandDispatcher::analyzeCommand(std::string rawCommand) {
                     return new ErrorCommand();
                 }
 
-                std::cout<<"here2"<<std::endl;
                 return new CollageCommand(args[1],args[2], args[3], args[4]);
 
             } else {

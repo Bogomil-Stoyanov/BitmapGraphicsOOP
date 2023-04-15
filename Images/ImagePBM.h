@@ -24,8 +24,8 @@ public:
     void toCollage(Image* image2, const std::string& direction, const std::string& outPath) override;
 
 private:
-    static const std::uint16_t MAX_COLOR_VALUE = 1;
     PixelMatrix<std::uint16_t> pixels;
+    static const std::uint16_t MAX_COLOR_VALUE = 1;
     void privateRead(std::ifstream& file) override;
     void privateWrite(std::ofstream& file) const override;
     void copy(Image* image) override;

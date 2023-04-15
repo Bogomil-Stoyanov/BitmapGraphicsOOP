@@ -28,10 +28,11 @@ public:
 
     T& getElementAt(const int row, const int col);
     const T& getElementAt(const int row, const int col) const;
+    void setElementAt(int row, int col, T elem);
 
     PixelMatrix<T>& operator=(const PixelMatrix<T>& other);
 
-private:
+//private:
     T** data;
     int countRows;
     int countColumns;
@@ -48,6 +49,11 @@ private:
 
     T& getElement(const int row, const int col) const;
 };
+
+template<typename T>
+void PixelMatrix<T>::setElementAt(int row, int col, T elem) {
+    data[row][col] = elem;
+}
 
 
 template<typename T>
