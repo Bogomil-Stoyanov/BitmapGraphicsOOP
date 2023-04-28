@@ -7,7 +7,8 @@
 #include "Command.h"
 
 class SessionInfoCommand : public Command{
-
+public:
+SessionInfoCommand(): Command(CommandType::SESSION_INFO){}
 };
 
 

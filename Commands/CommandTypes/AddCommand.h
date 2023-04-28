@@ -11,7 +11,7 @@ private:
     std::string path;
 
 public:
-    explicit AddCommand(const std::string &path);
+    explicit AddCommand(std::string path);
     std::string getPath();
 };
 

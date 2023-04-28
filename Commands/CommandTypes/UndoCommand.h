@@ -6,8 +6,9 @@
 
 #include "Command.h"
 
-class UndoCommand : public Command{
-
+class UndoCommand : public Command {
+public:
+    UndoCommand() : Command(CommandType::ADD) {}
 };
 
 

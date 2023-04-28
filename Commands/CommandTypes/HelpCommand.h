@@ -7,7 +7,8 @@
 #include "Command.h"
 
 class HelpCommand : public Command{
-
+public:
+    HelpCommand(): Command(CommandType::HELP){}
 };
 
 

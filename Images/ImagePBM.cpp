@@ -25,6 +25,7 @@ void ImagePBM::readFromFile(std::ifstream &file) {
 
 void ImagePBM::writeToFile(std::ofstream &file) {
     writeMagicNumberToFile(file);
+    file << pixels.getCols() << ' ' << pixels.getRows() << '\n';
     privateWrite(file);
     clearPreviousVersions();
 }

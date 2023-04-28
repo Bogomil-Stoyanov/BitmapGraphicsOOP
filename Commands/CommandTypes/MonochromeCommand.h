@@ -7,7 +7,8 @@
 #include "Command.h"
 
 class MonochromeCommand : public Command{
-
+public:
+ MonochromeCommand(): Command(CommandType::MONOCHROME){}
 };
 
 

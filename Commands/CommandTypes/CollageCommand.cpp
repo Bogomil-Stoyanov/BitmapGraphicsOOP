@@ -17,8 +17,9 @@ const std::string &CollageCommand::getOutPath() const {
 }
 
 CollageCommand::CollageCommand(std::string direction, std::string path1, std::string path2,
-                               std::string outPath) : direction(std::move(direction)), path1(std::move(path1)), path2(std::move(path2)),
-                                                             outPath(std::move(outPath)) {}
+                               std::string outPath) : Command(CommandType::COLLAGE), direction(std::move(direction)),
+                                                      path1(std::move(path1)), path2(std::move(path2)),
+                                                      outPath(std::move(outPath)) {}
 
 const std::string &CollageCommand::getDirection() const {
     return direction;

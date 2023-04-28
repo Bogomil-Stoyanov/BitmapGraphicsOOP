@@ -7,7 +7,8 @@
 #include "Command.h"
 
 class SaveCommand : public Command{
-
+public:
+    SaveCommand(): Command(CommandType::SAVE){}
 };
 
 

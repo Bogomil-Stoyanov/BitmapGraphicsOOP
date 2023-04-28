@@ -13,7 +13,7 @@ public:
     void start();
 
 private:
-    BitmapImageApp();
+    BitmapImageApp() = default;
     BitmapImageApp(const BitmapImageApp &other) = delete;
     BitmapImageApp &operator=(const BitmapImageApp &other) = delete;
     SessionManager manager;

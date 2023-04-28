@@ -5,7 +5,8 @@
 
 
 class ErrorCommand : public Command{
-
+public:
+    ErrorCommand(): Command(CommandType::ERROR){}
 };
 
 

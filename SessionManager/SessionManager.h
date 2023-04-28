@@ -27,6 +27,7 @@ private:
     void switchSession(int sessionId);
     void undo();
     bool isFileInUse(const std::string& filePath);
+    static void printHelp();
 
 public:
     void execute(Command* command);

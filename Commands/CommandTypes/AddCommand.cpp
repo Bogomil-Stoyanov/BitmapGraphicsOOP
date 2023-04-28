@@ -2,7 +2,9 @@
 
 #include "AddCommand.h"
 
-AddCommand::AddCommand(const std::string &path) : path(path) {}
+#include <utility>
+
+AddCommand::AddCommand(std::string path) : Command(CommandType::ADD), path(std::move(path)) {}
 
 std::string AddCommand::getPath() {
     return path;

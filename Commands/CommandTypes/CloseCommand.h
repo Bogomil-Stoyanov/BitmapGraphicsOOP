@@ -8,6 +8,8 @@
 
 class CloseCommand : public Command{
 
+public:
+    CloseCommand(): Command(CommandType::CLOSE){}
 };
 
 

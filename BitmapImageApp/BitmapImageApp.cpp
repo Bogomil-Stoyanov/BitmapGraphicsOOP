@@ -12,23 +12,18 @@ BitmapImageApp &BitmapImageApp::getInstance() {
 
 void BitmapImageApp::start() {
     std::string input;
-    Command *command;
+    Command *command = nullptr;
     do {
         std::getline(std::cin, input);
+        delete command;
         command = CommandDispatcher::analyzeCommand(input);
 
-        if (dynamic_cast<ErrorCommand *>(command) != nullptr) {
-
-        } else {
+        if (command->getCommandType() != CommandType::ERROR && command->getCommandType() != CommandType::EXIT) {
             manager.execute(command);
         }
 
-    } while (dynamic_cast<ExitCommand *>(command) == nullptr);
+    } while (command->getCommandType() != CommandType::EXIT);
 
     delete command;
     std::cout << "END" << std::endl;
-}
-
-BitmapImageApp::BitmapImageApp() {
-
 }

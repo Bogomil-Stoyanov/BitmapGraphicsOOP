@@ -7,7 +7,8 @@
 #include "Command.h"
 
 class NegativeCommand : public Command{
-
+public:
+ NegativeCommand(): Command(CommandType::NEGATIVE){}
 };
 
 

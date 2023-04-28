@@ -4,8 +4,9 @@
 #include "Command.h"
 
 
-class ExitCommand : public Command{
-
+class ExitCommand : public Command {
+public:
+    ExitCommand() : Command(CommandType::EXIT) {}
 };
 
 

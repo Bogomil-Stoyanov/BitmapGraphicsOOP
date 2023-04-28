@@ -30,58 +30,92 @@ Session &SessionManager::getActiveSession() {
 }
 
 void SessionManager::execute(Command *command) {
-    if (dynamic_cast<AddCommand *>(command) != nullptr) {
-        auto addCommand = dynamic_cast<AddCommand *>(command);
-        add(addCommand->getPath());
-    } else if (dynamic_cast<CloseCommand *>(command) != nullptr) {
-        auto closeCommand = dynamic_cast<CloseCommand *>(command);
-        std::cout << "close command" << std::endl;
-        close();
-    } else if (dynamic_cast<CollageCommand *>(command) != nullptr) {
-        auto collageCommand = dynamic_cast<CollageCommand *>(command);
-        std::cout << "collage command " << collageCommand->getPath1() << " " << collageCommand->getPath2() << " "
-                  << collageCommand->getOutPath() << " " << collageCommand->getDirection() << std::endl;
-        collage(collageCommand->getDirection(), collageCommand->getPath1(), collageCommand->getPath2(),
-                collageCommand->getOutPath());
-    } else if (dynamic_cast<GrayscaleCommand *>(command) != nullptr) {
-        auto grayscaleCommand = dynamic_cast<GrayscaleCommand *>(command);
-        std::cout << "grayscale command" << std::endl;
-        grayscale();
-    } else if (dynamic_cast<LoadCommand *>(command) != nullptr) {
-        auto loadCommand = dynamic_cast<LoadCommand *>(command);
-        load(loadCommand->getFilePaths());
-    } else if (dynamic_cast<MonochromeCommand *>(command) != nullptr) {
-        auto monochromeCommand = dynamic_cast<MonochromeCommand *>(command);
-        std::cout << "monochrome command" << std::endl;
-        monochrome();
-    } else if (dynamic_cast<NegativeCommand *>(command) != nullptr) {
-        auto negativeCommand = dynamic_cast<NegativeCommand *>(command);
-        std::cout << "negative command " << std::endl;
-        negative();
-    } else if (dynamic_cast<RotateCommand *>(command) != nullptr) {
-        auto rotateCommand = dynamic_cast<RotateCommand *>(command);
-        std::cout << "rotate command " << rotateCommand->getRotation() << std::endl;
-        rotate(rotateCommand->getRotation());
-    } else if (dynamic_cast<SaveAsCommand *>(command) != nullptr) {
-        auto saveasCommand = dynamic_cast<SaveAsCommand *>(command);
-        std::cout << "saveAs command " << saveasCommand->getPath() << std::endl;
-        saveAs(saveasCommand->getPath());
-    } else if (dynamic_cast<SaveCommand *>(command) != nullptr) {
-        auto saveCommand = dynamic_cast<SaveCommand *>(command);
-        std::cout << "save command" << std::endl;
-        save();
-    } else if (dynamic_cast<SessionInfoCommand *>(command) != nullptr) {
-        auto sessionInfoCommand = dynamic_cast<SessionInfoCommand *>(command);
-        std::cout << "session info command" << std::endl;
-        sessionInfo();
-    } else if (dynamic_cast<SwitchCommand *>(command) != nullptr) {
-        auto switchCommand = dynamic_cast<SwitchCommand *>(command);
-        std::cout << "switch command " << switchCommand->getSession() << std::endl;
-        switchSession(switchCommand->getSession());
-    } else if (dynamic_cast<UndoCommand *>(command) != nullptr) {
-        auto undoCommand = dynamic_cast<UndoCommand *>(command);
-        std::cout << "undo command" << std::endl;
-        undo();
+    switch(command->getCommandType()){
+        case CommandType::ADD:{
+            auto addCommand = dynamic_cast<AddCommand *>(command);
+            add(addCommand->getPath());
+            break;
+        }
+        case CommandType::CLOSE: {
+            auto closeCommand = dynamic_cast<CloseCommand *>(command);
+            std::cout << "close command" << std::endl;
+            close();
+            break;
+        }
+        case CommandType::COLLAGE:{
+            auto collageCommand = dynamic_cast<CollageCommand *>(command);
+            std::cout << "collage command " << collageCommand->getPath1() << " " << collageCommand->getPath2() << " "
+                      << collageCommand->getOutPath() << " " << collageCommand->getDirection() << std::endl;
+            collage(collageCommand->getDirection(), collageCommand->getPath1(), collageCommand->getPath2(),
+                    collageCommand->getOutPath());
+            break;
+        }
+        case CommandType::GRAYSCALE:{
+            auto grayscaleCommand = dynamic_cast<GrayscaleCommand *>(command);
+            std::cout << "grayscale command" << std::endl;
+            grayscale();
+            break;
+        }
+        case CommandType::HELP: {
+            printHelp();
+            break;
+        }
+        case CommandType::LOAD:{
+            auto loadCommand = dynamic_cast<LoadCommand *>(command);
+            load(loadCommand->getFilePaths());
+            break;
+        }
+        case CommandType::MONOCHROME: {
+            auto monochromeCommand = dynamic_cast<MonochromeCommand *>(command);
+            std::cout << "monochrome command" << std::endl;
+            monochrome();
+            break;
+        }
+        case CommandType::NEGATIVE: {
+            auto negativeCommand = dynamic_cast<NegativeCommand *>(command);
+            std::cout << "negative command " << std::endl;
+            negative();
+            break;
+        }
+        case CommandType::ROTATE: {
+            auto rotateCommand = dynamic_cast<RotateCommand *>(command);
+            std::cout << "rotate command " << rotateCommand->getRotation() << std::endl;
+            rotate(rotateCommand->getRotation());
+            break;
+        }
+        case CommandType::SAVE_AS: {
+            auto saveasCommand = dynamic_cast<SaveAsCommand *>(command);
+            std::cout << "saveAs command " << saveasCommand->getPath() << std::endl;
+            saveAs(saveasCommand->getPath());
+            break;
+        }
+        case CommandType::SAVE: {
+            auto saveCommand = dynamic_cast<SaveCommand *>(command);
+            std::cout << "save command" << std::endl;
+            save();
+            break;
+        }
+        case CommandType::SESSION_INFO: {
+            auto sessionInfoCommand = dynamic_cast<SessionInfoCommand *>(command);
+            std::cout << "session info command" << std::endl;
+            sessionInfo();
+            break;
+        }
+        case CommandType::SWITCH: {
+            auto switchCommand = dynamic_cast<SwitchCommand *>(command);
+            std::cout << "switch command " << switchCommand->getSession() << std::endl;
+            switchSession(switchCommand->getSession());
+            break;
+        }
+        case CommandType::UNDO: {
+            auto undoCommand = dynamic_cast<UndoCommand *>(command);
+            std::cout << "undo command" << std::endl;
+            undo();
+            break;
+        }
+        default:{
+            break;
+        }
     }
 }
 
@@ -209,4 +243,26 @@ bool SessionManager::isFileInUse(const std::string &filePath) {
         if (session.hasFile(filePath)) return true;
     }
     return false;
+}
+
+void SessionManager::printHelp() {
+    std::cout<<"--------------------------------------------------------------------------------"<<std::endl;
+    std::cout << "Welcome to BitmapGraphics!" << std::endl;
+    std::cout << "Here is a list of all available commands:" << std::endl;
+    std::cout << "load <file> - opens <file> and creates a new session"<<std::endl;
+    std::cout<< "add <file> - adds an image to the current session"<<std::endl;
+    std::cout<< "save - saves all files in the current session"<<std::endl;
+    std::cout<< "saveas <file> - saves the first file in the current session in <file>"<<std::endl;
+    std::cout<< "close - closes the active session"<<std::endl;
+    std::cout<< "help - gives a list of all available commands"<<std::endl;
+    std::cout<< "exit - exits the program"<<std::endl;
+    std::cout<< "session info - prints information about the current session"<<std::endl;
+    std::cout<< "switch <sessionId> - changes the active session"<<std::endl;
+    std::cout<< "grayscale - applies grayscale effect to all applicable images in the current session"<<std::endl;
+    std::cout<< "monochrome - applies monochrome effect to all applicable images in the current session"<<std::endl;
+    std::cout<< "negative - applies negative effect to all applicable images in the current session"<<std::endl;
+    std::cout<< "rotate <left|right> - rotates every image in current session in a direction (90 degrees) - left or right"<<std::endl;
+    std::cout<< "undo - undos the last command"<<std::endl;
+    std::cout<< "collage <horizontal|vertical> <image1> <image2> <outimage> -> creates a collage of <image1> and <image2> in <outimage>. image1 and image2 need to be present in the current session"<<std::endl;
+    std::cout<<"--------------------------------------------------------------------------------"<<std::endl;
 }

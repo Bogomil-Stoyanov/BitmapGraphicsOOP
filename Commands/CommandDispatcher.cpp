@@ -55,11 +55,13 @@ Command *CommandDispatcher::analyzeCommand(std::string rawCommand) {
         }
 
         return new LoadCommand(paths);
-    }
-    else if (args[0] == "add") {
+    } else if (args[0] == "add") {
 
-        if (command.size() <= 4) {
+        if (args.size() < 2) {
             std::cout << "Invalid parameters: Expected a filepath" << std::endl;
+            return new ErrorCommand();
+        } else if (args.size() > 2) {
+            std::cout << "Only a single filepath parameter expected" << std::endl;
             return new ErrorCommand();
         }
 
@@ -73,25 +75,29 @@ Command *CommandDispatcher::analyzeCommand(std::string rawCommand) {
             return new ErrorCommand();
         }
 
-    }
-    else if (args[0] == "save") {
+    } else if (args[0] == "save") {
         if (args.size() == 1) {
             return new SaveCommand();
         } else {
             std::cout << "No parameters expected!" << std::endl;
             return new ErrorCommand();
         }
-    }
-    else if (args[0] == "close") {
+    } else if (args[0] == "close") {
         if (args.size() == 1) {
             return new CloseCommand();
         } else {
             std::cout << "No parameters expected!" << std::endl;
             return new ErrorCommand();
         }
-    }
-    else if (args[0] == "saveas") {
+    } else if (args[0] == "saveas") {
         std::cout << "Save as command\n";
+        if (args.size() < 2) {
+            std::cout << "Invalid parameters: Expected a filepath" << std::endl;
+        } else if (args.size() > 2) {
+            std::cout << "Only a single filepath parameter expected" << std::endl;
+            return new ErrorCommand();
+        }
+
         std::string filePath = args[1];
         if (filePath.compare(filePath.size() - 4, 4, ".pbm") == 0 ||
             filePath.compare(filePath.size() - 4, 4, ".ppm") == 0 ||
@@ -101,41 +107,85 @@ Command *CommandDispatcher::analyzeCommand(std::string rawCommand) {
             std::cout << "File is not a PPM/PGM/PBM image." << std::endl;
             return new ErrorCommand();
         }
-    }
-    else if (args[0] == "help") {
-        std::cout << "Help command\n";
-        return new HelpCommand();
-    }
-    else if (args[0] == "exit") {
-        return new ExitCommand();
-    }
-    else if (args[0] == "close") {
-        return new CloseCommand();
-    }
-    else if (args[0]=="grayscale") {
-        return new GrayscaleCommand();
-    }
-    else if (args[0]=="monochrome") {
-        return new MonochromeCommand();
-    }
-    else if (args[0]=="negative") {
-        return new NegativeCommand();
-    }
-    else if (args[0]=="rotate") {
-        if(args[1] == "left" || args[1] == "right"){
-            return new RotateCommand(args[1]);
-        }else{
-            std::cout<<"Invalid rotation: choose left or right";
+    } else if (args[0] == "help") {
+        if (args.size() == 1) {
+            std::cout << "Help command\n";
+            return new HelpCommand();
+        } else {
+            std::cout << "No parameters expected" << std::endl;
             return new ErrorCommand();
         }
-    }
-    else if (args[0] == "undo") {
-        return new UndoCommand();
-    }
-    else if (args[0] == "session" && args[1] == "info") {
-        return new SessionInfoCommand();
-    }
-    else if (args[0] == "switch") {
+    } else if (args[0] == "exit") {
+        if (args.size() == 1) {
+            return new ExitCommand();
+        } else {
+            std::cout << "No parameters expected" << std::endl;
+            return new ErrorCommand();
+        }
+    } else if (args[0] == "close") {
+        if (args.size() == 1) {
+            return new CloseCommand();
+        } else {
+            std::cout << "No parameters expected" << std::endl;
+            return new ErrorCommand();
+        }
+    } else if (args[0] == "grayscale") {
+        if (args.size() == 1) {
+            return new GrayscaleCommand();
+        } else {
+            std::cout << "No parameters expected" << std::endl;
+            return new ErrorCommand();
+        }
+    } else if (args[0] == "monochrome") {
+        if (args.size() == 1) {
+            return new MonochromeCommand();
+        } else {
+            std::cout << "No parameters expected" << std::endl;
+            return new ErrorCommand();
+        }
+    } else if (args[0] == "negative") {
+        if (args.size() == 1) {
+            return new NegativeCommand();
+        } else {
+            std::cout << "No parameters expected" << std::endl;
+            return new ErrorCommand();
+        }
+    } else if (args[0] == "rotate") {
+        if (args.size() < 2) {
+            std::cout << "Invalid parameters: Expected a rotation (left | right)" << std::endl;
+            return new ErrorCommand();
+        } else if (args.size() > 2) {
+            std::cout << "Expected only a single parameter rotation (left | right)" << std::endl;
+            return new ErrorCommand();
+        }
+        if (args[1] == "left" || args[1] == "right") {
+            return new RotateCommand(args[1]);
+        } else {
+            std::cout << "Invalid rotation: choose left or right";
+            return new ErrorCommand();
+        }
+    } else if (args[0] == "undo") {
+        if (args.size() == 1) {
+            return new UndoCommand();
+        } else {
+            std::cout << "No parameters expected" << std::endl;
+            return new ErrorCommand();
+        }
+    } else if (args[0] == "session" && args[1] == "info") {
+        if (args.size() == 2) {
+            return new SessionInfoCommand();
+        } else {
+            std::cout << "No parameters expected" << std::endl;
+            return new ErrorCommand();
+        }
+    } else if (args[0] == "switch") {
+        if (args.size() < 2) {
+            std::cout << "Expected a parameter session number" << std::endl;
+            return new ErrorCommand();
+        } else if (args.size() > 2) {
+            std::cout << "Invalid number of parameters - expeted only a session number" << std::endl;
+            return new ErrorCommand();
+        }
 
         std::string sessionNumberString = args[1];
         try {
@@ -146,11 +196,15 @@ Command *CommandDispatcher::analyzeCommand(std::string rawCommand) {
             return new ErrorCommand();
         }
 
-    }
-    else if (args[0] == "collage") {
+    } else if (args[0] == "collage") {
 
-        if(args[1]!="horizontal" && args[1] != "vertical"){
-            std::cout<<"Provide a valid orientation: horizontal / vertical"<<std::endl;
+        if(args.size()!=5){
+            std::cout<<"Invalid number of arguments, expected: <horizontal|vertical> <image1> <image2> <outimage>"<<std::endl;
+            return new ErrorCommand();
+        }
+
+        if (args[1] != "horizontal" && args[1] != "vertical") {
+            std::cout << "Provide a valid orientation: horizontal / vertical" << std::endl;
             return new ErrorCommand();
         }
 
@@ -172,7 +226,7 @@ Command *CommandDispatcher::analyzeCommand(std::string rawCommand) {
                     return new ErrorCommand();
                 }
 
-                return new CollageCommand(args[1],args[2], args[3], args[4]);
+                return new CollageCommand(args[1], args[2], args[3], args[4]);
 
             } else {
                 std::cout << "Output file is not a PPM/PGM/PBM image." << std::endl;
@@ -183,10 +237,8 @@ Command *CommandDispatcher::analyzeCommand(std::string rawCommand) {
             std::cout << "File is not a PPM/PGM/PBM image." << std::endl;
             return new ErrorCommand();
         }
-
-    }
-    else {
-        std::cout << "Invalid command\n";
+    } else {
+        std::cout << "Invalid command" << std::endl;
         return new ErrorCommand();
     }
 }

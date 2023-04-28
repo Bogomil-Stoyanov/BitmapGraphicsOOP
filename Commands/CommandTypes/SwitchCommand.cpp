@@ -2,7 +2,7 @@
 
 #include "SwitchCommand.h"
 
-SwitchCommand::SwitchCommand(int session) : session(session) {}
+SwitchCommand::SwitchCommand(int session) : Command(CommandType::SWITCH), session(session) {}
 
 int SwitchCommand::getSession() {
     return session;

@@ -7,7 +7,8 @@
 #include "Command.h"
 
 class GrayscaleCommand : public Command{
-
+public:
+    GrayscaleCommand(): Command(CommandType::GRAYSCALE){}
 };
 
 
