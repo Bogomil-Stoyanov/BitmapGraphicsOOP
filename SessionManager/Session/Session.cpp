@@ -122,8 +122,8 @@ bool Session::hasFile(const std::string &filepath) const {
     return false;
 }
 
-bool Session::checkUnsavedChanges() const {
-    return unsavedChanges.empty();
+bool Session::hasUnsavedChanges() const {
+    return !unsavedChanges.empty();
 }
 
 void Session::collage(std::string path1, std::string path2, std::string outputPath, std::string direction) {

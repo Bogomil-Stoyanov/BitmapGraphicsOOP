@@ -24,8 +24,10 @@
 #include <iostream>
 #include <fstream>
 #include <utility>
+#include <exception>
 
 Session &SessionManager::getActiveSession() {
+    if(currentActiveSessionId==-1) throw std::runtime_error("No active session");
     return sessions[currentActiveSessionId - 1];
 }
 
@@ -177,6 +179,23 @@ void SessionManager::close() {
         std::cout << "No active sessions" << std::endl;
         return;
     }
+    if(getActiveSession().hasUnsavedChanges()){
+        std::string input = "EMPTY_STRING";
+        std::cout << "You have unsaved changes? Do you want to save them before exiting? ( Y | N ):" << std::endl;
+        input = "EMPTY_STRING";
+        do {
+            if (input != "EMPTY_STRING") {
+                std::cout << "Y | N:" << std::endl;
+            }
+            std::getline(std::cin, input);
+        } while (input != "Y" && input != "N");
+
+        if(input=="Y"){
+            save();
+        }
+    }else{
+        std::cout<<"NO unsaved changes"<<std::endl;
+    }
     sessions.erase(sessions.begin() + (currentActiveSessionId - 1));
     if (sessions.empty()) {
         currentActiveSessionId = 0;
@@ -265,4 +284,19 @@ void SessionManager::printHelp() {
     std::cout<< "undo - undos the last command"<<std::endl;
     std::cout<< "collage <horizontal|vertical> <image1> <image2> <outimage> -> creates a collage of <image1> and <image2> in <outimage>. image1 and image2 need to be present in the current session"<<std::endl;
     std::cout<<"--------------------------------------------------------------------------------"<<std::endl;
+}
+
+bool SessionManager::hasUnsavedChanges() {
+    for(const Session& session : sessions){
+        if(session.hasUnsavedChanges()){
+            return true;
+        }
+    }
+    return false;
+}
+
+void SessionManager::saveAllSessions() {
+    for(Session& session : sessions){
+        session.save();
+    }
 }

@@ -203,6 +203,7 @@ inline void PixelMatrix<T>::readAndResize(std::ifstream &file) {
     int rows;
     int cols;
     file >> cols >> rows;
+    std::cout<<cols<<" "<<rows<<std::endl;
     resize(rows, cols);
 }
 

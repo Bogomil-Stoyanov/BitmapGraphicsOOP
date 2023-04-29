@@ -95,11 +95,18 @@ void ImagePBM::toMonochrome() {
 }
 
 void ImagePBM::toNegative() {
-    pixels.negativeTransformation( 1);
+    pixels.negativeTransformation(1);
 }
 
 void ImagePBM::privateRead(std::ifstream &file) {
     pixels.readAndResize(file);
+    if(magicNumber==1){
+        //ascii
+        pixels.readAndResize(file);
+    }else{
+        //binary
+    }
+
 }
 
 void ImagePBM::privateWrite(std::ofstream &file) const {

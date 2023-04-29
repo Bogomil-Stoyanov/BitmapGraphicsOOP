@@ -10,7 +10,7 @@ class SessionManager {
 
 private:
     std::vector<Session> sessions;
-    int currentActiveSessionId;
+    int currentActiveSessionId = -1;
 
     Session& getActiveSession();
     void add(const std::string& filePath);
@@ -31,6 +31,8 @@ private:
 
 public:
     void execute(Command* command);
+    bool hasUnsavedChanges();
+    void saveAllSessions();
 };
 
 

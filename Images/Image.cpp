@@ -1,5 +1,6 @@
 
 #include <fstream>
+#include <iostream>
 #include "Image.h"
 
 
@@ -41,7 +42,7 @@ void Image::readMaxColorValueFromFile(std::ifstream &file) {
 }
 
 void Image::writeMagicNumberToFile(std::ofstream &file) const {
-    file << 'P' << magicNumber << '\n';
+    file << "P"<<magicNumber << '\n';
 }
 
 void Image::writeMaxColorValue(std::ofstream &file) const {

@@ -28,7 +28,7 @@ public:
     void close();
     void info() const;
     bool hasFile(const std::string& filepath) const;
-    bool checkUnsavedChanges() const;
+    bool hasUnsavedChanges() const;
 };
 
 
