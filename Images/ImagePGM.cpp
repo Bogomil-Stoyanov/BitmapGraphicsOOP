@@ -17,13 +17,19 @@ ImagePGM* ImagePGM::copy() {
 
 void ImagePGM::readFromFile(std::ifstream& file, bool isBinary) {
     readMagicNumberFromFile(file);
-    privateRead(file,isBinary);
+    privateRead(file);
     readMaxColorValueFromFile(file);
-    pixels.readFromFile(file);
+    std::cout<<maxColorValue<<std::endl;
+
+    if(isBinary){
+        privateBinaryRead(file);
+    }else{
+        pixels.readFromFile(file);
+    }
 }
 
 void ImagePGM::writeToFile(std::ofstream& file) {
-    writeMagicNumberToFile(file);
+    file<<"P2\n";
     file << pixels.getCols() << ' ' << pixels.getRows() << '\n';
     writeMaxColorValue(file);
     pixels.writeToFile(file);
@@ -48,7 +54,7 @@ void ImagePGM::toNegative() {
     pixels.negativeTransformation(maxColorValue);
 }
 
-void ImagePGM::privateRead(std::ifstream& file, bool isBinary) {
+void ImagePGM::privateRead(std::ifstream& file) {
     pixels.readAndResize(file);
 }
 
@@ -116,4 +122,19 @@ void ImagePGM::toCollage(Image *image2, const std::string &direction, const std:
 
     std::ofstream file(outPath);
     output.writeToFile(file);
+}
+
+void ImagePGM::privateBinaryRead(std::ifstream &file) {
+    int width = pixels.getCols();
+    int height = pixels.getRows();
+    unsigned char byte;
+    file.read(reinterpret_cast<char *>(&byte), 1);
+    for(int i = 0; i< height;i++){
+        for(int j = 0; j <width; j++){
+            file.read(reinterpret_cast<char *>(&byte), 1);
+            std::cout<<static_cast<int>(byte)<<" ";
+            pixels.setElementAt(i,j,static_cast<int>(byte));
+        }
+    }
+    std::cout<<std::endl;
 }

@@ -29,7 +29,8 @@ public:
 private:
     PixelMatrix<std::uint16_t> pixels;
 
-    void privateRead(std::ifstream& file, bool isBinary) override;
+    void privateRead(std::ifstream& file) override;
+    void privateBinaryRead(std::ifstream& file) override;
 
     void privateWrite(std::ofstream& file) const override;
 

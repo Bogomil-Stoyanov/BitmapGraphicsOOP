@@ -42,7 +42,8 @@ protected:
 
     void readMagicNumberFromFile(std::ifstream& file);
     void readMaxColorValueFromFile(std::ifstream& file);
-    virtual void privateRead(std::ifstream& file, bool isBinary) = 0;
+    virtual void privateRead(std::ifstream& file) = 0;
+    virtual void privateBinaryRead(std::ifstream& file) = 0;
 
     void writeMagicNumberToFile(std::ofstream& file) const;
     void writeMaxColorValue(std::ofstream& file) const;

@@ -1,10 +1,12 @@
 
 
 #include "ImagePPM.h"
+
+#include <utility>
 #include "Data/RGBPixelData.h"
 
 ImagePPM::ImagePPM(std::string fileName)
-        : Image(fileName, false, false, 1) {
+        : Image(std::move(fileName), false, false, 1) {
 }
 
 ImagePPM::ImagePPM(const ImagePPM& other)
@@ -17,13 +19,19 @@ ImagePPM* ImagePPM::copy() {
 
 void ImagePPM::readFromFile(std::ifstream& file, bool isBinary) {
     readMagicNumberFromFile(file);
-    privateRead(file,isBinary);
+    privateRead(file);
     readMaxColorValueFromFile(file);
-    pixels.readFromFile(file);
+
+    if(isBinary){
+        privateBinaryRead(file);
+    }else{
+        pixels.readFromFile(file);
+    }
+
 }
 
 void ImagePPM::writeToFile(std::ofstream& file) {
-    writeMagicNumberToFile(file);
+    file<<"P3\n";
     file << pixels.getCols() << ' ' << pixels.getRows() << '\n';
     writeMaxColorValue(file);
     privateWrite(file);
@@ -103,7 +111,7 @@ void ImagePPM::toNegative() {
     pixels.negativeTransformation(maxColorValue);
 }
 
-void ImagePPM::privateRead(std::ifstream& file, bool isBinary) {
+void ImagePPM::privateRead(std::ifstream& file) {
     pixels.readAndResize(file);
 }
 
@@ -119,4 +127,22 @@ void ImagePPM::copy(Image* image) {
     pixels = ppm->pixels;
 
     Image::copy(image);
+}
+
+void ImagePPM::privateBinaryRead(std::ifstream &file) {
+    int width = pixels.getCols();
+    int height = pixels.getRows();
+    unsigned char byte;
+    file.read(reinterpret_cast<char *>(&byte), 1);
+    for(int i = 0; i< height;i++){
+        for(int j = 0; j <width; j++){
+            file.read(reinterpret_cast<char *>(&byte), 1);
+            int red = static_cast<int>(byte);
+            file.read(reinterpret_cast<char *>(&byte), 1);
+            int green = static_cast<int>(byte);
+            file.read(reinterpret_cast<char *>(&byte), 1);
+            int blue = static_cast<int>(byte);
+            pixels.setElementAt(i,j,RGBPixelData(red,green,blue));
+        }
+    }
 }

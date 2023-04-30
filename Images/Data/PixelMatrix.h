@@ -128,6 +128,7 @@ inline PixelMatrix<T> &PixelMatrix<T>::operator=(const PixelMatrix<T> &other) {
 
 template<typename T>
 inline void PixelMatrix<T>::deleteData() {
+    std::cout<<"DELETING"<<std::endl;
     for (int row = 0; row < countRows; ++row) {
         delete[] data[row];
         data[row] = nullptr;

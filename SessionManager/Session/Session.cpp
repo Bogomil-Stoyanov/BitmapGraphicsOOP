@@ -148,3 +148,10 @@ void Session::collage(std::string path1, std::string path2, std::string outputPa
     }
 
 }
+
+Session::~Session() {
+    for(Image* im : images){
+        delete[] im;
+    }
+    images.clear();
+}

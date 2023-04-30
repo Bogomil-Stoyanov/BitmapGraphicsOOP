@@ -11,7 +11,7 @@
 
 class ImagePPM : public Image {
 public:
-    ImagePPM(std::string fileName);
+    explicit ImagePPM(std::string fileName);
     ImagePPM(const ImagePPM& other);
 
     ImagePPM* copy() override;
@@ -29,11 +29,14 @@ public:
 private:
     PixelMatrix<RGBPixelData> pixels;
 
-    void privateRead(std::ifstream& file, bool isBinary) override;
+    void privateRead(std::ifstream& file) override;
+    void privateBinaryRead(std::ifstream& file) override;
 
     void privateWrite(std::ofstream& file) const override;
 
     void copy(Image* image) override;
+
+
 };
 
 

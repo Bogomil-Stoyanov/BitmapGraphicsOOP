@@ -14,6 +14,7 @@ private:
 
 public:
     explicit Session();
+    ~Session();
     static int countOfSessions;
     int getId() const;
     void addImage(Image* image);

@@ -19,82 +19,16 @@ ImagePBM *ImagePBM::copy() {
 
 void ImagePBM::readFromFile(std::ifstream &file, bool isBinary) {
 
-
     if (isBinary) {
-
-        std::string fileType;
-        int width, height;
-        file >> fileType >> width >> height;
-        pixels.resize(height, width);
-//        std::string dummy;
-//        std::getline(file, dummy);
-
-        std::cout<<fileType<<" "<<width<<" "<<height<<"|"<<"|"<<std::endl;
-
-        unsigned char byte;
-
-        int row=0;
-        int col=0;
-
-        while (!file.eof()) {
-            file.read(reinterpret_cast<char *>(&byte), 1);
-            //std::cout << byte << " ";
-            for (int i = 0; i < 8; ++i) {
-                bool bit = byte & (1 << i);
-                //std::cout << "Bit " << i << ": " << bit << std::endl;
-                if(row < height){
-                    pixels.setElementAt(row,col,bit);
-                    std::cout<<bit<<" ";
-                }else{
-                    std::cout<<"OUT OF BOUND:"<<col<<";"<<row<<std::endl;
-                }
-                col++;
-                if(col>=width){
-                    col=0;
-                    row++;
-                }
-            }
-
-
-        }
-        std::cout<<" loadROW:"<<row<<" COL:"<<col;
-        std::cout << std::endl;
-
-//        for (int i = 0; i < height; i++)
-//        {
-//            for (int j = 0; j < width; j++)
-//            {
-//                // Read the next byte from the file
-//                file.read(&byte, 1);
-//
-//                // Extract the next bit from the byte
-//                int pixel = (byte >> (7 - bitIndex)) & 0x01;
-//
-//                // Store the pixel value in the array
-//                pixels.setElementAt(i,j,pixel);
-//                std::cout<<pixel<<" ";
-//
-//                // Move to the next bit in the byte
-//                bitIndex++;
-//                if (bitIndex == 8)
-//                {
-//                    bitIndex = 0;
-//                }
-//            }
-//            //std::cout<<std::endl;
-//        }
-
-
-        // std::cout<<fileType<<" "<<width<<" "<<height<<std::endl;
+        privateBinaryRead(file);
     } else {
         readMagicNumberFromFile(file);
-        privateRead(file, isBinary);
+        privateRead(file);
         pixels.readFromFile(file);
     }
 }
 
 void ImagePBM::writeToFile(std::ofstream &file) {
-    //writeMagicNumberToFile(file);
     file << "P1\n";
     file << pixels.getCols() << ' ' << pixels.getRows() << '\n';
     privateWrite(file);
@@ -169,7 +103,7 @@ void ImagePBM::toNegative() {
     pixels.negativeTransformation(1);
 }
 
-void ImagePBM::privateRead(std::ifstream &file, bool isBinary) {
+void ImagePBM::privateRead(std::ifstream &file) {
     pixels.readAndResize(file);
 }
 
@@ -185,4 +119,33 @@ void ImagePBM::copy(Image *image) {
     pixels = pbm->pixels;
 
     Image::copy(image);
+}
+
+void ImagePBM::privateBinaryRead(std::ifstream &file) {
+    std::string fileType;
+    int width, height;
+    file >> fileType >> width >> height;
+    pixels.resize(height, width);
+    unsigned char byte;
+
+    int row = 0;
+    int col = 0;
+
+    file.read(reinterpret_cast<char *>(&byte), 1);
+    while (!file.eof()) {
+        file.read(reinterpret_cast<char *>(&byte), 1);
+        for (int i = 7; i >= 0; i--) {
+            bool bit = (byte >> i) & 1;
+            if (row < height) {
+                pixels.setElementAt(row, col, bit);
+            } else {
+                return;
+            }
+            col++;
+            if (col >= width) {
+                col = 0;
+                row++;
+            }
+        }
+    }
 }
