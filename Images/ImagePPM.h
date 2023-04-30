@@ -16,7 +16,7 @@ public:
 
     ImagePPM* copy() override;
 
-    void readFromFile(std::ifstream& file) override;
+    void readFromFile(std::ifstream& file, bool isBinary) override;
     void writeToFile(std::ofstream& file) override;
 
     void rotate(std::string direction) override;
@@ -29,7 +29,7 @@ public:
 private:
     PixelMatrix<RGBPixelData> pixels;
 
-    void privateRead(std::ifstream& file) override;
+    void privateRead(std::ifstream& file, bool isBinary) override;
 
     void privateWrite(std::ofstream& file) const override;
 

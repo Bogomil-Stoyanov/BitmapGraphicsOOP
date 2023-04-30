@@ -27,13 +27,13 @@
 #include <exception>
 
 Session &SessionManager::getActiveSession() {
-    if(currentActiveSessionId==-1) throw std::runtime_error("No active session");
+    if (currentActiveSessionId == -1) throw std::runtime_error("No active session");
     return sessions[currentActiveSessionId - 1];
 }
 
 void SessionManager::execute(Command *command) {
-    switch(command->getCommandType()){
-        case CommandType::ADD:{
+    switch (command->getCommandType()) {
+        case CommandType::ADD: {
             auto addCommand = dynamic_cast<AddCommand *>(command);
             add(addCommand->getPath());
             break;
@@ -44,7 +44,7 @@ void SessionManager::execute(Command *command) {
             close();
             break;
         }
-        case CommandType::COLLAGE:{
+        case CommandType::COLLAGE: {
             auto collageCommand = dynamic_cast<CollageCommand *>(command);
             std::cout << "collage command " << collageCommand->getPath1() << " " << collageCommand->getPath2() << " "
                       << collageCommand->getOutPath() << " " << collageCommand->getDirection() << std::endl;
@@ -52,7 +52,7 @@ void SessionManager::execute(Command *command) {
                     collageCommand->getOutPath());
             break;
         }
-        case CommandType::GRAYSCALE:{
+        case CommandType::GRAYSCALE: {
             auto grayscaleCommand = dynamic_cast<GrayscaleCommand *>(command);
             std::cout << "grayscale command" << std::endl;
             grayscale();
@@ -62,7 +62,7 @@ void SessionManager::execute(Command *command) {
             printHelp();
             break;
         }
-        case CommandType::LOAD:{
+        case CommandType::LOAD: {
             auto loadCommand = dynamic_cast<LoadCommand *>(command);
             load(loadCommand->getFilePaths());
             break;
@@ -115,7 +115,7 @@ void SessionManager::execute(Command *command) {
             undo();
             break;
         }
-        default:{
+        default: {
             break;
         }
     }
@@ -138,8 +138,17 @@ void SessionManager::load(std::vector<std::string> paths) {
     sessions.push_back(newSession);
     currentActiveSessionId = newSession.getId();
     for (const auto &path: unusedPaths) {
+        bool isInBinary = isFileBinary(path);
+
+
         std::ifstream file;
-        file.open(path);
+
+        if(isInBinary){
+            file = std::ifstream (path, std::ios::binary);
+        }else{
+            file = std::ifstream (path);
+        }
+
 
         if (!file.is_open()) {
             std::cout << "File " + path << " was not opened!" << std::endl;
@@ -147,7 +156,7 @@ void SessionManager::load(std::vector<std::string> paths) {
             continue;
         }
         auto image = ImageCreator::createImage(path);
-        image->readFromFile(file);
+        image->readFromFile(file, isInBinary);
         getActiveSession().addImage(image);
         file.close();
     }
@@ -159,8 +168,16 @@ void SessionManager::add(const std::string &filePath) {
         return;
     }
 
+    bool isInBinary = isFileBinary(filePath);
+
+
     std::ifstream file;
-    file.open(filePath);
+
+    if(isInBinary){
+        file = std::ifstream (filePath, std::ios::binary);
+    }else{
+        file = std::ifstream (filePath);
+    }
 
     if (!file.is_open()) {
         std::cout << "File " + filePath << " was not opened!" << std::endl;
@@ -169,7 +186,7 @@ void SessionManager::add(const std::string &filePath) {
     }
 
     auto image = ImageCreator::createImage(filePath);
-    image->readFromFile(file);
+    image->readFromFile(file, isInBinary);
     getActiveSession().addImage(image);
     file.close();
 }
@@ -179,7 +196,7 @@ void SessionManager::close() {
         std::cout << "No active sessions" << std::endl;
         return;
     }
-    if(getActiveSession().hasUnsavedChanges()){
+    if (getActiveSession().hasUnsavedChanges()) {
         std::string input = "EMPTY_STRING";
         std::cout << "You have unsaved changes? Do you want to save them before exiting? ( Y | N ):" << std::endl;
         input = "EMPTY_STRING";
@@ -190,11 +207,11 @@ void SessionManager::close() {
             std::getline(std::cin, input);
         } while (input != "Y" && input != "N");
 
-        if(input=="Y"){
+        if (input == "Y") {
             save();
         }
-    }else{
-        std::cout<<"NO unsaved changes"<<std::endl;
+    } else {
+        std::cout << "NO unsaved changes" << std::endl;
     }
     sessions.erase(sessions.begin() + (currentActiveSessionId - 1));
     if (sessions.empty()) {
@@ -265,30 +282,34 @@ bool SessionManager::isFileInUse(const std::string &filePath) {
 }
 
 void SessionManager::printHelp() {
-    std::cout<<"--------------------------------------------------------------------------------"<<std::endl;
+    std::cout << "--------------------------------------------------------------------------------" << std::endl;
     std::cout << "Welcome to BitmapGraphics!" << std::endl;
     std::cout << "Here is a list of all available commands:" << std::endl;
-    std::cout << "load <file> - opens <file> and creates a new session"<<std::endl;
-    std::cout<< "add <file> - adds an image to the current session"<<std::endl;
-    std::cout<< "save - saves all files in the current session"<<std::endl;
-    std::cout<< "saveas <file> - saves the first file in the current session in <file>"<<std::endl;
-    std::cout<< "close - closes the active session"<<std::endl;
-    std::cout<< "help - gives a list of all available commands"<<std::endl;
-    std::cout<< "exit - exits the program"<<std::endl;
-    std::cout<< "session info - prints information about the current session"<<std::endl;
-    std::cout<< "switch <sessionId> - changes the active session"<<std::endl;
-    std::cout<< "grayscale - applies grayscale effect to all applicable images in the current session"<<std::endl;
-    std::cout<< "monochrome - applies monochrome effect to all applicable images in the current session"<<std::endl;
-    std::cout<< "negative - applies negative effect to all applicable images in the current session"<<std::endl;
-    std::cout<< "rotate <left|right> - rotates every image in current session in a direction (90 degrees) - left or right"<<std::endl;
-    std::cout<< "undo - undos the last command"<<std::endl;
-    std::cout<< "collage <horizontal|vertical> <image1> <image2> <outimage> -> creates a collage of <image1> and <image2> in <outimage>. image1 and image2 need to be present in the current session"<<std::endl;
-    std::cout<<"--------------------------------------------------------------------------------"<<std::endl;
+    std::cout << "load <file> - opens <file> and creates a new session" << std::endl;
+    std::cout << "add <file> - adds an image to the current session" << std::endl;
+    std::cout << "save - saves all files in the current session" << std::endl;
+    std::cout << "saveas <file> - saves the first file in the current session in <file>" << std::endl;
+    std::cout << "close - closes the active session" << std::endl;
+    std::cout << "help - gives a list of all available commands" << std::endl;
+    std::cout << "exit - exits the program" << std::endl;
+    std::cout << "session info - prints information about the current session" << std::endl;
+    std::cout << "switch <sessionId> - changes the active session" << std::endl;
+    std::cout << "grayscale - applies grayscale effect to all applicable images in the current session" << std::endl;
+    std::cout << "monochrome - applies monochrome effect to all applicable images in the current session" << std::endl;
+    std::cout << "negative - applies negative effect to all applicable images in the current session" << std::endl;
+    std::cout
+            << "rotate <left|right> - rotates every image in current session in a direction (90 degrees) - left or right"
+            << std::endl;
+    std::cout << "undo - undos the last command" << std::endl;
+    std::cout
+            << "collage <horizontal|vertical> <image1> <image2> <outimage> -> creates a collage of <image1> and <image2> in <outimage>. image1 and image2 need to be present in the current session"
+            << std::endl;
+    std::cout << "--------------------------------------------------------------------------------" << std::endl;
 }
 
 bool SessionManager::hasUnsavedChanges() {
-    for(const Session& session : sessions){
-        if(session.hasUnsavedChanges()){
+    for (const Session &session: sessions) {
+        if (session.hasUnsavedChanges()) {
             return true;
         }
     }
@@ -296,7 +317,17 @@ bool SessionManager::hasUnsavedChanges() {
 }
 
 void SessionManager::saveAllSessions() {
-    for(Session& session : sessions){
+    for (Session &session: sessions) {
         session.save();
     }
+}
+
+bool SessionManager::isFileBinary(const std::string& filepath) {
+    std::ifstream file(filepath);
+    file.ignore();
+    int magicNumber;
+    file >> magicNumber;
+    file.close();
+    if (magicNumber == 4 || magicNumber == 5 || magicNumber == 6) return true;
+    return false;
 }

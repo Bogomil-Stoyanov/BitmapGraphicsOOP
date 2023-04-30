@@ -14,7 +14,7 @@ public:
 
     virtual Image* copy() = 0;
 
-    virtual void readFromFile(std::ifstream& file) = 0;
+    virtual void readFromFile(std::ifstream& file, bool isBinary) = 0;
     virtual void writeToFile(std::ofstream& file) = 0;
 
     virtual void rotate(std::string direction) = 0;
@@ -42,7 +42,7 @@ protected:
 
     void readMagicNumberFromFile(std::ifstream& file);
     void readMaxColorValueFromFile(std::ifstream& file);
-    virtual void privateRead(std::ifstream& file) = 0;
+    virtual void privateRead(std::ifstream& file, bool isBinary) = 0;
 
     void writeMagicNumberToFile(std::ofstream& file) const;
     void writeMaxColorValue(std::ofstream& file) const;

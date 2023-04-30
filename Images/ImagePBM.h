@@ -13,7 +13,7 @@ public:
 
     ImagePBM* copy() override;
 
-    void readFromFile(std::ifstream& file) override;
+    void readFromFile(std::ifstream& file, bool isBinary) override;
     void writeToFile(std::ofstream& file) override;
 
     void rotate(std::string direction) override;
@@ -26,7 +26,7 @@ public:
 private:
     PixelMatrix<std::uint16_t> pixels;
     static const std::uint16_t MAX_COLOR_VALUE = 1;
-    void privateRead(std::ifstream& file) override;
+    void privateRead(std::ifstream& file, bool isBinary) override;
     void privateWrite(std::ofstream& file) const override;
     void copy(Image* image) override;
 };

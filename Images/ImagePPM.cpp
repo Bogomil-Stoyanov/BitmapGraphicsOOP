@@ -15,9 +15,9 @@ ImagePPM* ImagePPM::copy() {
     return new ImagePPM(*this);
 }
 
-void ImagePPM::readFromFile(std::ifstream& file) {
+void ImagePPM::readFromFile(std::ifstream& file, bool isBinary) {
     readMagicNumberFromFile(file);
-    privateRead(file);
+    privateRead(file,isBinary);
     readMaxColorValueFromFile(file);
     pixels.readFromFile(file);
 }
@@ -103,7 +103,7 @@ void ImagePPM::toNegative() {
     pixels.negativeTransformation(maxColorValue);
 }
 
-void ImagePPM::privateRead(std::ifstream& file) {
+void ImagePPM::privateRead(std::ifstream& file, bool isBinary) {
     pixels.readAndResize(file);
 }
 

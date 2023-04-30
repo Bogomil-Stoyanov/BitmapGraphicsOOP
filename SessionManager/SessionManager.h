@@ -28,6 +28,7 @@ private:
     void undo();
     bool isFileInUse(const std::string& filePath);
     static void printHelp();
+    static bool isFileBinary(const std::string& filepath);
 
 public:
     void execute(Command* command);
