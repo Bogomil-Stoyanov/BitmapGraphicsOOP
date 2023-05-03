@@ -68,6 +68,6 @@ void Image::copy(Image *image) {
     delete image;
 }
 
-Image::Image(std::string filePath, const bool grayscale, const bool monochrome, const std::uint16_t maxColorValue) : fileName(std::move(
+Image::Image(std::string filePath, const bool grayscale, const bool monochrome, const unsigned short maxColorValue) : fileName(std::move(
         filePath)), grayscale(grayscale), monochrome(monochrome), maxColorValue(maxColorValue), previousVersion(nullptr) {
 }

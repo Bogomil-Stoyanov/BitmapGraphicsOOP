@@ -2,11 +2,11 @@
 
 #include "RGBPixelData.h"
 
-RGBPixelData::RGBPixelData(const std::uint16_t val)
+RGBPixelData::RGBPixelData(const unsigned short val)
         : red(val), green(val), blue(val) {
 }
 
-RGBPixelData::RGBPixelData(const std::uint16_t red, const std::uint16_t green, const std::uint16_t blue)
+RGBPixelData::RGBPixelData(const unsigned short red, const unsigned short green, const unsigned short blue)
         : red(red), green(green), blue(blue) {
 }
 
@@ -23,34 +23,34 @@ void RGBPixelData::write(std::ostream& out) const {
 }
 
 void RGBPixelData::toGrayscale() {
-    std::uint16_t gray = std::round((0.229 * red) + (0.587 * green) + (0.114 * blue));
+    unsigned short gray = std::round((0.229 * red) + (0.587 * green) + (0.114 * blue));
 
     setRGB(gray);
 }
 
-void RGBPixelData::normalize(const std::uint16_t value) {
-    std::uint16_t BWVal = std::round((double)(red + green + blue) / (3 * value));
+void RGBPixelData::normalize(const unsigned short value) {
+    unsigned short BWVal = std::round((double)(red + green + blue) / (3 * value));
 
     setRGB(value * BWVal);
 }
 
-void RGBPixelData::toNegative(const std::uint16_t value) {
+void RGBPixelData::toNegative(const unsigned short value) {
     *this = value - *this;
 }
 
-void RGBPixelData::setRGB(const std::uint16_t val) {
+void RGBPixelData::setRGB(const unsigned short val) {
     red = val;
     green = val;
     blue = val;
 }
 
-void RGBPixelData::setRGB(const std::uint16_t red, const std::uint16_t green, const std::uint16_t blue) {
+void RGBPixelData::setRGB(const unsigned short red, const unsigned short green, const unsigned short blue) {
     this->red  = red;
     this->green = green;
     this->blue = blue;
 }
 
-RGBPixelData& operator-(const std::uint16_t val, RGBPixelData& rgb) {
+RGBPixelData& operator-(const unsigned short val, RGBPixelData& rgb) {
     rgb.setRGB(val - rgb.red, val - rgb.green, val - rgb.blue);
 
     return rgb;

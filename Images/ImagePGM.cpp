@@ -78,7 +78,7 @@ Image *ImagePGM::toCollage(Image *image2, const std::string &direction, const st
     auto image2pgm = dynamic_cast<ImagePGM *>(image2);
 
     int rows, cols;
-    PixelMatrix<std::uint16_t> matrix;
+    PixelMatrix<unsigned short> matrix;
 
     if (direction == "horizontal") {
         rows = std::max(pixels.getRows(), image2pgm->pixels.getRows());

@@ -28,7 +28,7 @@ public:
     Image* toCollage(Image* image2, const std::string& direction, const std::string& outPath) override;
 
 private:
-    PixelMatrix<std::uint16_t> pixels;
+    PixelMatrix<unsigned short> pixels;
 
     void privateRead(std::ifstream& file) override;
     void privateBinaryRead(std::ifstream& file) override;

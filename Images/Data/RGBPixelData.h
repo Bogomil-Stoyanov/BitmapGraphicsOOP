@@ -9,25 +9,25 @@
 struct RGBPixelData {
     
 public:
-    std::uint16_t red;
-    std::uint16_t green;
-    std::uint16_t blue;
+    unsigned short red;
+    unsigned short green;
+    unsigned short blue;
 
 public:
-    RGBPixelData(std::uint16_t val = 0);
-    RGBPixelData(std::uint16_t red, std::uint16_t green, std::uint16_t blue);
+    RGBPixelData(unsigned short val = 0);
+    RGBPixelData(unsigned short red, unsigned short green, unsigned short blue);
     bool operator==(const RGBPixelData& other) const;
 
     void read(std::istream& in);
     void write(std::ostream& out) const;
     void toGrayscale();
-    void normalize(std::uint16_t value);
-    void toNegative(std::uint16_t value);
+    void normalize(unsigned short value);
+    void toNegative(unsigned short value);
 
-    void setRGB(std::uint16_t value);
-    void setRGB(std::uint16_t red, std::uint16_t green, std::uint16_t blue);
+    void setRGB(unsigned short value);
+    void setRGB(unsigned short red, unsigned short green, unsigned short blue);
 
-    friend RGBPixelData& operator-(std::uint16_t val, RGBPixelData& pixelData);
+    friend RGBPixelData& operator-(unsigned short val, RGBPixelData& pixelData);
     friend std::istream& operator>>(std::istream& in, RGBPixelData& pixelData);
     friend std::ostream& operator<<(std::ostream& out, const RGBPixelData& pixelData);
 
