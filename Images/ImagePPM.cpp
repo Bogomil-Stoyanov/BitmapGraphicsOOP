@@ -9,29 +9,29 @@ ImagePPM::ImagePPM(std::string fileName)
         : Image(std::move(fileName), false, false, 1) {
 }
 
-ImagePPM::ImagePPM(const ImagePPM& other)
+ImagePPM::ImagePPM(const ImagePPM &other)
         : Image(other), pixels(other.pixels) {
 }
 
-ImagePPM* ImagePPM::copy() {
+ImagePPM *ImagePPM::copy() {
     return new ImagePPM(*this);
 }
 
-void ImagePPM::readFromFile(std::ifstream& file, bool isBinary) {
+void ImagePPM::readFromFile(std::ifstream &file, bool isBinary) {
     readMagicNumberFromFile(file);
     privateRead(file);
     readMaxColorValueFromFile(file);
 
-    if(isBinary){
+    if (isBinary) {
         privateBinaryRead(file);
-    }else{
+    } else {
         pixels.readFromFile(file);
     }
 
 }
 
-void ImagePPM::writeToFile(std::ofstream& file) {
-    file<<"P3\n";
+void ImagePPM::writeToFile(std::ofstream &file) {
+    file << "P3\n";
     file << pixels.getCols() << ' ' << pixels.getRows() << '\n';
     writeMaxColorValue(file);
     privateWrite(file);
@@ -39,7 +39,7 @@ void ImagePPM::writeToFile(std::ofstream& file) {
     clearPreviousVersions();
 }
 
-void ImagePPM::toCollage(Image *image2, const std::string &direction, const std::string &outPath) {
+Image *ImagePPM::toCollage(Image *image2, const std::string &direction, const std::string &outPath) {
     std::string type = fileName.substr(fileName.size() - 4);
     auto image2ppm = dynamic_cast<ImagePPM *>(image2);
 
@@ -83,12 +83,15 @@ void ImagePPM::toCollage(Image *image2, const std::string &direction, const std:
         }
     }
 
-    ImagePPM output(outPath);
-    output.magicNumber = magicNumber;
-    output.pixels = matrix;
+    auto *output = new ImagePPM(outPath);
+    output->magicNumber = magicNumber;
+    output->pixels = matrix;
 
     std::ofstream file(outPath);
-    output.writeToFile(file);
+    output->writeToFile(file);
+    file.close();
+
+    return output;
 }
 
 void ImagePPM::rotate(std::string direction) {
@@ -96,12 +99,14 @@ void ImagePPM::rotate(std::string direction) {
 }
 
 void ImagePPM::toGrayscale() {
+    grayscale = true;
     for (int row = 0; row < pixels.getRows(); ++row)
         for (int col = 0; col < pixels.getCols(); ++col)
             pixels.getElementAt(row, col).toGrayscale();
 }
 
 void ImagePPM::toMonochrome() {
+    monochrome = true;
     for (int row = 0; row < pixels.getRows(); ++row)
         for (int col = 0; col < pixels.getCols(); ++col)
             pixels.getElementAt(row, col).normalize(maxColorValue);
@@ -111,16 +116,16 @@ void ImagePPM::toNegative() {
     pixels.negativeTransformation(maxColorValue);
 }
 
-void ImagePPM::privateRead(std::ifstream& file) {
+void ImagePPM::privateRead(std::ifstream &file) {
     pixels.readAndResize(file);
 }
 
-void ImagePPM::privateWrite(std::ofstream& file) const {
+void ImagePPM::privateWrite(std::ofstream &file) const {
     pixels.writeToFile(file);
 }
 
-void ImagePPM::copy(Image* image) {
-    auto ppm = dynamic_cast<ImagePPM*>(image);
+void ImagePPM::copy(Image *image) {
+    auto ppm = dynamic_cast<ImagePPM *>(image);
 
     if (ppm == nullptr) return; // incorrect image type
 
@@ -134,15 +139,19 @@ void ImagePPM::privateBinaryRead(std::ifstream &file) {
     int height = pixels.getRows();
     unsigned char byte;
     file.read(reinterpret_cast<char *>(&byte), 1);
-    for(int i = 0; i< height;i++){
-        for(int j = 0; j <width; j++){
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
             file.read(reinterpret_cast<char *>(&byte), 1);
             int red = static_cast<int>(byte);
             file.read(reinterpret_cast<char *>(&byte), 1);
             int green = static_cast<int>(byte);
             file.read(reinterpret_cast<char *>(&byte), 1);
             int blue = static_cast<int>(byte);
-            pixels.setElementAt(i,j,RGBPixelData(red,green,blue));
+            pixels.setElementAt(i, j, RGBPixelData(red, green, blue));
         }
     }
+}
+
+ImagePPM::~ImagePPM() {
+    clearPreviousVersions();
 }

@@ -213,6 +213,8 @@ void SessionManager::close() {
     } else {
         std::cout << "NO unsaved changes" << std::endl;
     }
+
+
     sessions.erase(sessions.begin() + (currentActiveSessionId - 1));
     if (sessions.empty()) {
         currentActiveSessionId = 0;

@@ -13,6 +13,7 @@ class ImagePGM : public Image {
 public:
     ImagePGM(std::string fileName);
     ImagePGM(const ImagePGM& other);
+    ~ImagePGM();
 
     ImagePGM* copy() override;
 
@@ -24,7 +25,7 @@ public:
     void toGrayscale() override;
     void toMonochrome() override;
     void toNegative() override;
-    void toCollage(Image* image2, const std::string& direction, const std::string& outPath) override;
+    Image* toCollage(Image* image2, const std::string& direction, const std::string& outPath) override;
 
 private:
     PixelMatrix<std::uint16_t> pixels;

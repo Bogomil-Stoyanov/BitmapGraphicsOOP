@@ -139,8 +139,8 @@ void Session::collage(std::string path1, std::string path2, std::string outputPa
         if (image->getFileName() == path1) {
             for (auto image2: images) {
                 if (image2->getFileName() == path2) {
-                    image->toCollage(image2, direction, outputPath);
-                    break;
+                    images.push_back(image->toCollage(image2, direction, outputPath));
+                    return;
                 }
             }
             break;
@@ -151,7 +151,7 @@ void Session::collage(std::string path1, std::string path2, std::string outputPa
 
 Session::~Session() {
     for(Image* im : images){
-        delete[] im;
+        delete im;
     }
     images.clear();
 }

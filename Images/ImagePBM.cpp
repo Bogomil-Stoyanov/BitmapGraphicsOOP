@@ -35,7 +35,7 @@ void ImagePBM::writeToFile(std::ofstream &file) {
     clearPreviousVersions();
 }
 
-void ImagePBM::toCollage(Image *image2, const std::string &direction, const std::string &outPath) {
+Image* ImagePBM::toCollage(Image *image2, const std::string &direction, const std::string &outPath) {
     std::string type = fileName.substr(fileName.size() - 4);
     auto image2pbm = dynamic_cast<ImagePBM *>(image2);
 
@@ -79,12 +79,15 @@ void ImagePBM::toCollage(Image *image2, const std::string &direction, const std:
         }
     }
 
-    ImagePBM output(outPath);
-    output.magicNumber = magicNumber;
-    output.pixels = matrix;
+    auto* output = new ImagePBM(outPath);
+    output->magicNumber = magicNumber;
+    output->pixels = matrix;
 
     std::ofstream file(outPath);
-    output.writeToFile(file);
+    output->writeToFile(file);
+    file.close();
+
+    return output;
 }
 
 void ImagePBM::rotate(std::string direction) {
@@ -148,4 +151,8 @@ void ImagePBM::privateBinaryRead(std::ifstream &file) {
             }
         }
     }
+}
+
+ImagePBM::~ImagePBM() {
+    clearPreviousVersions();
 }

@@ -21,7 +21,7 @@ public:
     virtual void toGrayscale() = 0;
     virtual void toMonochrome() = 0;
     virtual void toNegative() = 0;
-    virtual void toCollage(Image* image2, const std::string& direction, const std::string& outPath) = 0;
+    virtual Image* toCollage(Image* image2, const std::string& direction, const std::string& outPath) = 0;
 
     virtual void undo();
 
@@ -30,7 +30,7 @@ public:
     virtual ~Image() = default;
 
 protected:
-    Image(std::string filePath, const bool grayscale = false, const bool monochrome = false, const std::uint16_t maxColorValue = 0);
+    Image(std::string filePath, bool grayscale = false, bool monochrome = false, std::uint16_t maxColorValue = 0);
     Image(const Image& other);
 
     std::string fileName;

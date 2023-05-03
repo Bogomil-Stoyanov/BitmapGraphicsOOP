@@ -10,6 +10,7 @@ class ImagePBM : public Image {
 public:
     explicit ImagePBM(std::string fileName);
     ImagePBM(const ImagePBM& other);
+    ~ImagePBM();
 
     ImagePBM* copy() override;
 
@@ -21,7 +22,7 @@ public:
     void toGrayscale() override;
     void toMonochrome() override;
     void toNegative() override;
-    void toCollage(Image* image2, const std::string& direction, const std::string& outPath) override;
+    Image* toCollage(Image* image2, const std::string& direction, const std::string& outPath) override;
 
 private:
     PixelMatrix<std::uint16_t> pixels;
